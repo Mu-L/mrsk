@@ -19,10 +19,20 @@ class Kamal::Commands::Docker < Kamal::Commands::Base
     [ '[ "${EUID:-$(id -u)}" -eq 0 ] || sudo -nl usermod >/dev/null' ]
   end
 
-  # If we're not root and not already in the docker group
-  # add us to the docker group and terminate all our current sessions
-  def add_group
-    [ '[ "${EUID:-$(id -u)}" -eq 0 ] || id -nG "${USER:-$(id -un)}" | grep -qw docker || { sudo -n usermod -aG docker "${USER:-$(id -un)}" && kill -HUP ${PPID:-ps -o ppid= -p $$}; }' ]
+  def root?
+    [ '[ "${EUID:-$(id -u)}" -eq 0 ]' ]
+  end
+
+  def in_docker_group?
+    [ 'id -nG "${USER:-$(id -un)}" | grep -qw docker' ]
+  end
+
+  def add_to_docker_group
+    [ 'sudo -n usermod -aG docker "${USER:-$(id -un)}"' ]
+  end
+
+  def refresh_session
+    [ 'kill -HUP $PPID' ]
   end
 
   def create_network
