@@ -20,9 +20,13 @@ class Kamal::Configuration
     def create_from(config_file:, destination: nil, version: nil)
       ENV["KAMAL_DESTINATION"] = destination
 
-      raw_config = load_config_files(config_file, *destination_config_file(config_file, destination))
+      raw_config = load_raw_config(config_file: config_file, destination: destination)
 
       new raw_config, destination: destination, version: version
+    end
+
+    def load_raw_config(config_file:, destination: nil)
+      load_config_files(config_file, *destination_config_file(config_file, destination))
     end
 
     private

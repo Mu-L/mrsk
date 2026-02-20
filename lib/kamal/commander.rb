@@ -121,6 +121,15 @@ class Kamal::Commander
     config.aliases[name]
   end
 
+  def resolve_alias(name)
+    if @config
+      @config.aliases[name]&.command
+    else
+      raw_config = Kamal::Configuration.load_raw_config(**@config_kwargs.to_h.slice(:config_file, :destination))
+      raw_config[:aliases]&.dig(name)
+    end
+  end
+
   def with_verbosity(level)
     old_level = self.verbosity
 

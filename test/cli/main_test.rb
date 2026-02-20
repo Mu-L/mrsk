@@ -605,6 +605,18 @@ class CliMainTest < CliTestCase
     end
   end
 
+  test "run an alias with require_destination" do
+    invoke_options = { "config_file" => "test/fixtures/deploy_for_required_dest.yml", "version" => "999", "skip_hooks" => false, "destination" => "world" }
+
+    Kamal::Cli::Main.any_instance.expects(:invoke).with("kamal:cli:build:deliver", [], invoke_options)
+    Kamal::Cli::Main.any_instance.expects(:invoke).with("kamal:cli:proxy:boot", [], invoke_options)
+    Kamal::Cli::Main.any_instance.expects(:invoke).with("kamal:cli:app:stale_containers", [], invoke_options.merge(stop: true))
+    Kamal::Cli::Main.any_instance.expects(:invoke).with("kamal:cli:app:boot", [], invoke_options)
+    Kamal::Cli::Main.any_instance.expects(:invoke).with("kamal:cli:prune:all", [], invoke_options)
+
+    run_command("world_deploy", config_file: "deploy_for_required_dest")
+  end
+
   test "run on primary via alias" do
     run_command("primary_details", config_file: "deploy_with_aliases").tap do |output|
       assert_match "App Host: 1.1.1.1", output
