@@ -37,6 +37,6 @@ class CommandsDockerTest < ActiveSupport::TestCase
   end
 
   test "refresh_session" do
-    assert_equal 'kill -HUP $PPID', @docker.refresh_session.join(" ")
+    assert_equal "kill -HUP $PPID", @docker.refresh_session.join(" ")
   end
 end

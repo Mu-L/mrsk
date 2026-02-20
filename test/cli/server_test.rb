@@ -74,7 +74,7 @@ class CliServerTest < CliTestCase
     SSHKit::Backend::Abstract.any_instance.expects(:execute).with('[ "${EUID:-$(id -u)}" -eq 0 ]', raise_on_non_zero_exit: false).returns(false).at_least_once
     SSHKit::Backend::Abstract.any_instance.expects(:execute).with('id -nG "${USER:-$(id -un)}" | grep -qw docker', raise_on_non_zero_exit: false).returns(false).at_least_once
     SSHKit::Backend::Abstract.any_instance.expects(:execute).with('sudo -n usermod -aG docker "${USER:-$(id -un)}"').at_least_once
-    SSHKit::Backend::Abstract.any_instance.expects(:execute).with('kill -HUP $PPID').at_least_once.raises(IOError, "closed stream")
+    SSHKit::Backend::Abstract.any_instance.expects(:execute).with("kill -HUP $PPID").at_least_once.raises(IOError, "closed stream")
     SSHKit::Backend::Abstract.any_instance.expects(:execute).with(:mkdir, "-p", ".kamal").returns("").at_least_once
     Kamal::Commands::Hook.any_instance.stubs(:hook_exists?).returns(true)
     SSHKit::Backend::Abstract.any_instance.expects(:execute).with(".kamal/hooks/pre-connect", anything).at_least_once

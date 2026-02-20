@@ -32,7 +32,7 @@ class Kamal::Commands::Docker < Kamal::Commands::Base
   end
 
   def refresh_session
-    [ 'kill -HUP $PPID' ]
+    [ "kill -HUP $PPID" ]
   end
 
   def create_network
